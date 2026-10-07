@@ -1,0 +1,142 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Sidebar from '../components/Sidebar.astro';
+import Section from '../components/Section.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import VideoGrid from '../components/VideoGrid.astro';
+import Timeline from '../components/Timeline.astro';
+import CopyEmail from '../components/CopyEmail.astro';
+import { education, builds, skills } from '../content/experience';
+import { site } from '../config';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+
+const nav = [
+	{ id: 'about', label: 'About' },
+	{ id: 'projects', label: 'Projects' },
+	{ id: 'videos', label: 'Videos' },
+	{ id: 'education', label: 'Education' },
+	{ id: 'contact', label: 'Contact' },
+];
+---
+
+<Base>
+	<a href="#content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-bg">
+		Skip to content
+	</a>
+
+	<div class="mx-auto min-h-dvh max-w-screen-xl px-6 py-12 md:px-12 md:py-20 lg:px-24 lg:py-0">
+		<div class="lg:flex lg:justify-between lg:gap-8">
+			<Sidebar nav={nav} />
+
+			<main id="content" class="pt-10 lg:w-[54%] lg:py-24">
+				<Section id="about" title="About">
+					<div class="space-y-4">
+						<p>
+							I'm a second-year Computer Science student at the <span class="text-fg">Technion</span>. I'm interested in what happens
+							underneath the libraries, so I tend to build things from the ground up: a{' '}
+							<a href="#projects" class="link">3D engine</a> where every pixel is computed on the CPU, my own font
+							rasterizer and math typesetter, and a neural network trained with no ML framework.
+						</p>
+						<p>
+							Away from the keyboard I design parts in SolidWorks and print them: a motorised camera gimbal for the
+							Raspberry Pi, actuators driven by an Arduino, and a self-locking worm-gear drive for a university design
+							project. I like it when software and hardware meet.
+						</p>
+						<p>
+							I'm now starting a <a href="#videos" class="link">YouTube channel</a> to explain these builds the way I
+							wish they had been explained to me: from first principles, with real numbers on screen. I speak English,
+							Hebrew and Arabic.
+						</p>
+					</div>
+
+					<dl class="mt-8 grid gap-x-6 gap-y-4 sm:grid-cols-2">
+						{
+							skills.map((s) => (
+								<div>
+									<dt class="font-mono text-xs tracking-wide text-dim uppercase">{s.group}</dt>
+									<dd class="mt-1 text-sm text-fg/90">{s.items.join(' · ')}</dd>
+								</div>
+							))
+						}
+					</dl>
+				</Section>
+
+				<Section id="projects" title="Projects">
+					<div class="dim-group space-y-16 lg:space-y-10">
+						{projects.map((p) => <ProjectCard project={p} />)}
+					</div>
+					<a href={site.github} target="_blank" rel="noreferrer" class="link mt-12 inline-flex items-center gap-1 text-sm font-semibold">
+						More on GitHub ↗
+					</a>
+				</Section>
+
+				<Section id="videos" title="Videos">
+					<VideoGrid />
+				</Section>
+
+				<Section id="education" title="Education">
+					<Timeline entries={education} />
+					<h3 class="eyebrow mt-14 mb-4 text-dim!">Hardware builds</h3>
+					<Timeline entries={builds} />
+				</Section>
+
+				<Section id="contact" title="Contact">
+					<h3 class="text-2xl font-semibold tracking-tight text-fg">Let's talk.</h3>
+					<p class="mt-3 max-w-md">
+						Open to internships, student positions and interesting projects, and always happy to hear video ideas.
+						My inbox is open.
+					</p>
+					<div class="mt-6">
+						<CopyEmail />
+					</div>
+				</Section>
+
+				<footer class="max-w-md pb-16 text-sm text-dim sm:pb-0 lg:pb-24">
+					<p>
+						Built with <a href="https://astro.build" class="link" target="_blank" rel="noreferrer">Astro</a> and{' '}
+						<a href="https://tailwindcss.com" class="link" target="_blank" rel="noreferrer">Tailwind</a>, written in Neovim,
+						and hosted on GitHub Pages. Set in Inter and JetBrains Mono. Layout inspired by{' '}
+						<a href="https://brittanychiang.com" class="link" target="_blank" rel="noreferrer">Brittany Chiang</a>.
+					</p>
+				</footer>
+			</main>
+		</div>
+	</div>
+
+	<!-- image lightbox for project galleries -->
+	<dialog id="lightbox" class="m-auto max-h-[90dvh] max-w-[min(92vw,1100px)] rounded-xl border border-line bg-bg p-0 backdrop:bg-black/80 backdrop:backdrop-blur-sm">
+		<form method="dialog">
+			<button class="absolute top-3 right-3 rounded-full bg-black/60 px-3 py-1 text-sm text-fg hover:bg-black/80" aria-label="Close">✕</button>
+		</form>
+		<img alt="" class="block max-h-[85dvh] w-auto" />
+		<p class="px-4 py-3 font-mono text-xs text-dim" data-caption></p>
+	</dialog>
+</Base>
+
+<script>
+	// gallery lightbox
+	const dlg = document.getElementById('lightbox') as HTMLDialogElement;
+	const big = dlg.querySelector('img')!;
+	const cap = dlg.querySelector<HTMLElement>('[data-caption]')!;
+	document.querySelectorAll<HTMLButtonElement>('[data-lightbox]').forEach((btn) => {
+		btn.addEventListener('click', () => {
+			const img = btn.querySelector('img')!;
+			big.src = img.dataset.full ?? img.currentSrc;
+			big.alt = img.alt;
+			cap.textContent = img.alt;
+			dlg.showModal();
+		});
+	});
+	dlg.addEventListener('click', (e) => e.target === dlg && dlg.close());
+
+	// no autoplaying clips for people who asked for less motion
+	if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		document.querySelectorAll<HTMLVideoElement>('video[data-autoplay]').forEach((v) => {
+			v.removeAttribute('autoplay');
+			v.pause();
+			v.controls = true;
+		});
+	}
+</script>

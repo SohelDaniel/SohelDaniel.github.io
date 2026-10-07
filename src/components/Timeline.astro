@@ -1,0 +1,30 @@
+---
+import type { Entry } from '../content/experience';
+
+interface Props {
+	entries: Entry[];
+}
+const { entries } = Astro.props;
+---
+
+<ol class="dim-group space-y-3">
+	{
+		entries.map((e) => (
+			<li class="dim-item grid gap-1 rounded-xl border border-transparent transition-colors sm:grid-cols-[7.5rem_1fr] sm:gap-6 lg:-mx-6 lg:p-6 lg:hover:border-line lg:hover:bg-surface/60">
+				<p class="pt-0.5 font-mono text-xs leading-6 tracking-wide text-dim uppercase">{e.when}</p>
+				<div>
+					<h3 class="leading-snug font-semibold text-fg">{e.title}</h3>
+					{e.where && <p class="text-sm text-muted/90">{e.where}</p>}
+					<p class="mt-2 text-[15px]">{e.text}</p>
+					{e.tags && (
+						<ul class="mt-3 flex flex-wrap gap-2">
+							{e.tags.map((t) => (
+								<li class="tag">{t}</li>
+							))}
+						</ul>
+					)}
+				</div>
+			</li>
+		))
+	}
+</ol>

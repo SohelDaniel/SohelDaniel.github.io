@@ -1,0 +1,53 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../config';
+---
+
+<div class="flex flex-wrap items-center gap-3">
+	<a
+		href={`mailto:${site.email}`}
+		class="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-bg transition hover:brightness-110"
+	>
+		<Icon name="mail" class="size-4" /> Say hello
+	</a>
+	<button
+		type="button"
+		data-copy={site.email}
+		class="group inline-flex items-center gap-2 rounded-full border border-line px-4 py-2.5 font-mono text-sm text-fg transition-colors hover:border-accent/60"
+		aria-label="Copy email address"
+	>
+		<span data-label>{site.email}</span>
+		<span class="text-dim transition-colors group-hover:text-accent">
+			<span data-icon="copy"><Icon name="copy" class="size-4" /></span>
+			<span data-icon="check" class="hidden text-accent"><Icon name="check" class="size-4" /></span>
+		</span>
+	</button>
+	<span role="status" aria-live="polite" class="sr-only" data-status></span>
+</div>
+
+<script>
+	document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+		btn.addEventListener('click', async () => {
+			try {
+				await navigator.clipboard.writeText(btn.dataset.copy!);
+			} catch {
+				location.href = `mailto:${btn.dataset.copy}`;
+				return;
+			}
+			const label = btn.querySelector<HTMLElement>('[data-label]')!;
+			const copy = btn.querySelector<HTMLElement>('[data-icon="copy"]')!;
+			const check = btn.querySelector<HTMLElement>('[data-icon="check"]')!;
+			const status = btn.parentElement!.querySelector<HTMLElement>('[data-status]')!;
+			label.textContent = 'Copied!';
+			status.textContent = 'Email address copied';
+			copy.classList.add('hidden');
+			check.classList.remove('hidden');
+			setTimeout(() => {
+				label.textContent = btn.dataset.copy!;
+				status.textContent = '';
+				copy.classList.remove('hidden');
+				check.classList.add('hidden');
+			}, 1800);
+		});
+	});
+</script>

@@ -1,0 +1,165 @@
+---
+import { Image } from 'astro:assets';
+import { render, type CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+
+interface Props {
+	project: CollectionEntry<'projects'>;
+}
+const { project } = Astro.props;
+const p = project.data;
+const { Content } = await render(project);
+---
+
+<article class="dim-item group/card relative rounded-2xl border border-transparent p-0 transition-colors duration-200 lg:-mx-6 lg:p-6 lg:hover:border-line lg:hover:bg-surface/60">
+	<!-- media: looping clip if there is one, otherwise the cover image -->
+	<div class="overflow-hidden rounded-xl border border-line bg-black">
+		{
+			p.clip ? (
+				<video
+					class="aspect-video w-full object-cover"
+					autoplay
+					muted
+					loop
+					playsinline
+					preload="metadata"
+					poster={`/media/${p.clip}-poster.jpg`}
+					aria-label={p.coverAlt}
+					data-autoplay
+				>
+					<source src={`/media/${p.clip}.webm`} type="video/webm" />
+					<source src={`/media/${p.clip}.mp4`} type="video/mp4" />
+				</video>
+			) : (
+				<Image
+					src={p.cover}
+					alt={p.coverAlt}
+					widths={[480, 800, 1200]}
+					sizes="(min-width: 1024px) 560px, 100vw"
+					class="aspect-video w-full object-contain"
+				/>
+			)
+		}
+	</div>
+
+	<div class="mt-5 flex items-baseline justify-between gap-4">
+		<h3 class="text-xl font-semibold tracking-tight text-fg">
+			{
+				p.repo ? (
+					<a href={p.repo} target="_blank" rel="noreferrer" class="group/t inline-flex items-baseline gap-1 transition-colors hover:text-accent">
+						{p.title}
+						<Icon name="arrow" class="size-4 translate-y-px transition-transform group-hover/t:-translate-y-0.5 group-hover/t:translate-x-0.5" />
+					</a>
+				) : (
+					p.title
+				)
+			}
+		</h3>
+		<span class="font-mono text-xs text-dim">{p.year}</span>
+	</div>
+
+	<p class="mt-2 text-[15px]">{p.blurb}</p>
+
+	{
+		p.stats.length > 0 && (
+			<dl class="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-4">
+				{p.stats.map((s) => (
+					<div class="bg-bg px-4 py-3">
+						<dt class="sr-only">{s.label}</dt>
+						<dd class="font-mono text-lg font-semibold text-fg">{s.value}</dd>
+						<dd class="text-xs text-dim">{s.label}</dd>
+					</div>
+				))}
+			</dl>
+		)
+	}
+
+	<div class="prose-list mt-5 text-[15px]">
+		<Content />
+	</div>
+
+	{
+		p.gallery.length > 0 && (
+			<ul class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+				{p.gallery.map((g) => (
+					<li>
+						<button type="button" class="group/g block w-full text-left" data-lightbox aria-label={`Enlarge: ${g.alt}`}>
+							<Image
+								src={g.src}
+								alt={g.alt}
+								widths={[320, 640]}
+								sizes="(min-width: 640px) 180px, 45vw"
+								class="aspect-4/3 w-full rounded-lg border border-line bg-black object-cover transition duration-200 group-hover/g:border-accent/50"
+								data-full={g.src.src}
+							/>
+							{g.caption && <span class="mt-1.5 block font-mono text-[11px] leading-4 text-dim">{g.caption}</span>}
+						</button>
+					</li>
+				))}
+			</ul>
+		)
+	}
+
+	<ul class="mt-6 flex flex-wrap gap-2" aria-label="Technologies used">
+		{p.tech.map((t) => <li class="tag">{t}</li>)}
+	</ul>
+
+	<div class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium">
+		{
+			p.repo && (
+				<a href={p.repo} target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 text-fg transition-colors hover:text-accent">
+					<Icon name="github" class="size-4" /> Source code
+				</a>
+			)
+		}
+		{
+			p.demo && (
+				<a href={p.demo} target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 text-fg transition-colors hover:text-accent">
+					<Icon name="arrow" class="size-4" /> Live demo
+				</a>
+			)
+		}
+		{
+			p.video && (
+				<a
+					href={`https://www.youtube.com/watch?v=${p.video}`}
+					target="_blank"
+					rel="noreferrer"
+					class="inline-flex items-center gap-2 text-fg transition-colors hover:text-yt"
+				>
+					<Icon name="youtube" class="size-4" /> Watch the build
+				</a>
+			)
+		}
+	</div>
+</article>
+
+<style>
+	.prose-list :global(ul) {
+		display: grid;
+		gap: 0.6rem;
+	}
+	.prose-list :global(li) {
+		position: relative;
+		padding-left: 1.25rem;
+	}
+	.prose-list :global(li)::before {
+		content: '▹';
+		position: absolute;
+		left: 0;
+		color: var(--color-accent);
+	}
+	.prose-list :global(strong) {
+		color: var(--color-fg);
+		font-weight: 600;
+	}
+	.prose-list :global(code) {
+		font-family: var(--font-mono);
+		font-size: 0.85em;
+		color: var(--color-fg);
+		background: var(--color-surface);
+		border: 1px solid var(--color-line);
+		border-radius: 0.3rem;
+		padding: 0.05rem 0.3rem;
+	}
+</style>

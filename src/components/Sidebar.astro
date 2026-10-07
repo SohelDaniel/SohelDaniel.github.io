@@ -1,0 +1,122 @@
+---
+import Icon from './Icon.astro';
+import { site, youtube } from '../config';
+
+interface Props {
+	nav: { id: string; label: string }[];
+}
+const { nav } = Astro.props;
+
+const socials = [
+	{ href: site.github, label: 'GitHub', icon: 'github' as const },
+	...(youtube.url ? [{ href: youtube.url, label: 'YouTube', icon: 'youtube' as const }] : []),
+	{ href: `mailto:${site.email}`, label: 'Email', icon: 'mail' as const },
+];
+---
+
+<header class="lg:sticky lg:top-0 lg:flex lg:max-h-dvh lg:w-[44%] lg:flex-col lg:justify-between lg:py-24">
+	<div>
+		<div class="flex items-center gap-4">
+			{
+				site.photo ? (
+					<img src={site.photo} alt={site.name} width="56" height="56" class="size-14 rounded-full object-cover ring-1 ring-line" />
+				) : (
+					<span
+						aria-hidden="true"
+						class="grid size-14 place-items-center rounded-2xl border border-accent/40 bg-accent-soft font-mono text-lg font-bold text-accent"
+					>
+						SD
+					</span>
+				)
+			}
+			<p class="font-mono text-xs leading-5 text-dim">
+				{site.role}<br />{site.location}
+			</p>
+		</div>
+
+		<h1 class="mt-6 text-4xl font-bold tracking-tight text-fg sm:text-5xl">
+			<a href="/">{site.name}</a>
+		</h1>
+		<p class="mt-4 max-w-xs text-lg leading-snug text-fg/90">{site.tagline}</p>
+
+		{
+			site.now && (
+				<p class="mt-5 flex max-w-xs items-start gap-2.5 text-sm">
+					<span class="relative mt-1.5 flex size-2 shrink-0">
+						<span class="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:hidden" />
+						<span class="relative inline-flex size-2 rounded-full bg-accent" />
+					</span>
+					<span>
+						<span class="text-fg">Now:</span> {site.now}
+					</span>
+				</p>
+			)
+		}
+
+		<nav class="mt-14 hidden lg:block" aria-label="Sections">
+			<ul class="w-max space-y-1">
+				{
+					nav.map((n) => (
+						<li>
+							<a href={`#${n.id}`} data-nav={n.id} class="group flex items-center py-2.5">
+								<span class="mr-4 h-px w-8 bg-dim transition-all duration-200 group-hover:w-16 group-hover:bg-fg group-[.active]:w-16 group-[.active]:bg-fg" />
+								<span class="eyebrow text-dim! transition-colors group-hover:text-fg! group-[.active]:text-fg!">{n.label}</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+	</div>
+
+	<div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-4">
+		<ul class="flex items-center gap-5" aria-label="Social links">
+			{
+				socials.map((s) => (
+					<li>
+						<a
+							href={s.href}
+							target={s.href.startsWith('http') ? '_blank' : undefined}
+							rel="noreferrer"
+							class="block text-muted transition-colors hover:text-fg"
+							aria-label={s.label}
+							title={s.label}
+						>
+							<Icon name={s.icon} class="size-6" />
+						</a>
+					</li>
+				))
+			}
+		</ul>
+		{
+			site.cv && (
+				<a
+					href={site.cv}
+					target="_blank"
+					class="inline-flex items-center gap-2 rounded-full border border-line px-4 py-1.5 text-sm font-medium text-fg transition-colors hover:border-accent/60 hover:text-accent"
+				>
+					<Icon name="file" class="size-4" /> Résumé
+				</a>
+			)
+		}
+	</div>
+</header>
+
+<script>
+	// highlight the nav entry of the section currently in view
+	const links = new Map([...document.querySelectorAll<HTMLAnchorElement>('[data-nav]')].map((a) => [a.dataset.nav!, a]));
+	const visible = new Set<string>();
+	const io = new IntersectionObserver(
+		(entries) => {
+			for (const e of entries) e.isIntersecting ? visible.add(e.target.id) : visible.delete(e.target.id);
+			// first section (in page order) that's on screen wins
+			const current = [...links.keys()].find((id) => visible.has(id));
+			links.forEach((a, id) => a.classList.toggle('active', id === current));
+		},
+		{ rootMargin: '-30% 0px -55% 0px' },
+	);
+	links.forEach((_, id) => {
+		const el = document.getElementById(id);
+		if (el) io.observe(el);
+	});
+</script>

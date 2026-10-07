@@ -1,0 +1,18 @@
+---
+// A page section. On phones its title sticks to the top while you scroll
+// through it; on desktop the sidebar nav does that job, so the title is hidden.
+interface Props {
+	id: string;
+	title: string;
+}
+const { id, title } = Astro.props;
+---
+
+<section id={id} aria-label={title} class="mb-20 md:mb-28 lg:mb-36">
+	<div class="sticky top-0 z-20 -mx-6 mb-6 bg-bg/80 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only">
+		<h2 class="eyebrow font-bold">{title}</h2>
+	</div>
+	<div class="reveal">
+		<slot />
+	</div>
+</section>
