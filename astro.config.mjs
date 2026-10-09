@@ -3,7 +3,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-	site: 'https://soheldaniel.github.io',
+	site: 'https://danielsohel.com',
 	integrations: [sitemap()],
 	vite: { plugins: [tailwindcss()] },
 });

@@ -1,6 +1,6 @@
 # soheldaniel.github.io
 
-My portfolio: projects, videos, education. Live at **https://soheldaniel.github.io**.
+My portfolio: projects, videos, education. Live at **https://danielsohel.com** (https://soheldaniel.github.io redirects there). The privacy policy for my private dashboard is at /privacy.
 
 Astro + Tailwind, static, hosted on GitHub Pages. Every push to `main` deploys, and the
 site also rebuilds once a day so new YouTube uploads appear on their own.
