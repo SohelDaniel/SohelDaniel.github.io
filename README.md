@@ -20,7 +20,7 @@ Needs Node 22.12+ and pnpm.
 
 | I want to…                         | Edit                                                        |
 |------------------------------------|-------------------------------------------------------------|
-| change name, tagline, "Now", links | `src/config.ts`                                             |
+| change name, tagline, "Now", links (GitHub, Instagram) | `src/config.ts`                                             |
 | add my YouTube channel             | `src/config.ts` → `youtube.url` and `youtube.channelId`     |
 | pin specific videos                | `src/config.ts` → `youtube.videos` (ids after `watch?v=`)   |
 | add a photo                        | put `me.jpg` in `public/`, set `photo: '/me.jpg'`           |

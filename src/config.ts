@@ -9,6 +9,8 @@ export const site = {
 	location: 'Haifa, Israel',
 	email: 'sohel.danial@campus.technion.ac.il',
 	github: 'https://github.com/SohelDaniel',
+	// Empty hides the icon.
+	instagram: 'https://www.instagram.com/sohel_daniel/',
 	// Leave empty to hide the button. The file goes in public/.
 	cv: '',
 	// Square photo in public/ (e.g. '/me.jpg'). Empty shows an "SD" monogram instead.

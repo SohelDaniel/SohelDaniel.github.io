@@ -10,6 +10,7 @@ const { nav } = Astro.props;
 const socials = [
 	{ href: site.github, label: 'GitHub', icon: 'github' as const },
 	...(youtube.url ? [{ href: youtube.url, label: 'YouTube', icon: 'youtube' as const }] : []),
+	...(site.instagram ? [{ href: site.instagram, label: 'Instagram', icon: 'instagram' as const }] : []),
 	{ href: `mailto:${site.email}`, label: 'Email', icon: 'mail' as const },
 ];
 ---
