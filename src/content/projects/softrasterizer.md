@@ -2,7 +2,7 @@
 title: softrasterizer
 blurb: A software rasterizer in C++17 with no graphics API and no third-party libraries. It loads an OBJ model, projects it through a perspective camera and fills every triangle into a z-buffer by hand. This is where the video renderer started.
 year: '2026'
-order: 2
+order: 3
 tech: [C++17, Rasterization, Z-buffer, Unit tests]
 repo: https://github.com/SohelDaniel/softrasterizer
 cover: ../../assets/projects/sr-render.png

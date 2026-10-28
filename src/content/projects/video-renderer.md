@@ -2,7 +2,7 @@
 title: sarah's video renderer
 blurb: A 3D engine written from scratch in C++17, built so an AI can direct the scenes. The AI describes what's in a scene in a tiny language; a solver decides where everything goes, how it moves without colliding and where the camera stands, then a CPU rasterizer draws it live.
 year: '2026'
-order: 1
+order: 2
 tech: [C++17, SDL3, CPU rasterizer, Layout solver, Own TeX + font engine, ffmpeg]
 repo: https://github.com/SohelDaniel/sarah-s-video-renderer
 cover: ../../assets/projects/vr-showcase-hd.png

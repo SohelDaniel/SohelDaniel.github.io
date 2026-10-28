@@ -16,7 +16,7 @@ export const site = {
 	// Square photo in public/ (e.g. '/me.jpg'). Empty shows an "SD" monogram instead.
 	photo: '',
 	// One line about what you're doing right now. Empty hides it.
-	now: 'Hooking an AI up to my 3D engine so it can direct its own scenes.',
+	now: 'Building Dan, a visual AI tutor that draws and narrates its explanations.',
 };
 
 export const youtube = {

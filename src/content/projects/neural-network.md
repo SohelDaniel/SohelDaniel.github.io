@@ -2,7 +2,7 @@
 title: neural-network
 blurb: A neural network written from scratch in C++17 with no ML libraries. A multilayer perceptron with its own matrix class, hand-derived backpropagation and plain SGD, trained on MNIST handwritten digits to 98.33% test accuracy.
 year: '2026'
-order: 3
+order: 4
 tech: [C++17, Backpropagation, SGD, MNIST, Gradient check, CMake]
 repo: https://github.com/SohelDaniel/neural-network
 cover: ../../assets/projects/nn-mnist.png
